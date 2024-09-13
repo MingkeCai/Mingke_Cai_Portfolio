@@ -1,4 +1,4 @@
-# Mingke Cai's Data Science Portfolio
+# Mingke Cai's Portfolio
 # Introduction
 Hello and welcome to my portfolio!
 
