@@ -1,6 +1,6 @@
 # Mingke Cai's Portfolio
 ## Hello and welcome to my portfolio!
-![Mingke Cai][https://example.com/path/to/your/photo.jpg](https://github.com/MingkeCai/Mingke_Cai_Portfolio/blob/main/avatar_1%20(1).png)
+<img src="(https://github.com/MingkeCai/Mingke_Cai_Portfolio/blob/main/avatar_1%20(1).png)" width="200" alt="Mingke Cai">
 ## Introduction
 
 I'm Mingke Cai, a passionate data enthusiast excited to share my journey with you. 
