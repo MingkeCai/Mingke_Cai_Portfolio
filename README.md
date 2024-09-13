@@ -1,7 +1,9 @@
 # Mingke Cai's Data Science Portfolio
-Introduction
+# Introduction
 Hello and welcome to my portfolio!
+
 I'm Mingke Cai, a passionate data enthusiast excited to share my journey with you. 
+
 This repository showcases a collection of projects that demonstrate my skills in various aspects of data science, including:
 - Data preprocessing
 - Data analysis
@@ -12,7 +14,7 @@ This repository showcases a collection of projects that demonstrate my skills in
 Most of my projects are implemented using Python in Jupyter Notebooks. 
 I frequently utilize popular packages such as Pandas, NumPy, Seaborn, and Matplotlib to derive insights and create compelling visualizations.
 
-Projects
+# Projects
 Below you'll find brief summaries of each project in this portfolio. For more detailed information, please navigate to the respective project folders.
 
 # 1 Crime Analysis and Prediction in NYC area
