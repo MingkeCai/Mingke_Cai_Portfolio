@@ -1,7 +1,7 @@
 # Mingke Cai's Portfolio
-## Hello and welcome to my portfolio!
 
 ## Introduction
+Hello and welcome to my portfolio!
 
 I'm Mingke Cai, a passionate data enthusiast excited to share my journey with you. 
 This repository showcases a collection of projects that demonstrate my skills in various aspects of data science, including:
