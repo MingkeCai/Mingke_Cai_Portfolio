@@ -1,10 +1,9 @@
 # Mingke Cai's Portfolio
 <div style="display: flex; align-items: flex-start;">
-  <div style="flex: 1;">
+  <div style="flex: 1; padding-right: 20px;">
     <h2>Introduction</h2>
-    <p><strong>Hello and welcome to my portfolio!</strong></p>
-    <p>I'm Mingke Cai, a passionate data enthusiast excited to share my journey with you. 
-      This repository showcases a collection of projects that demonstrate my skills in various aspects of data science, including:</p>
+    <p>Hello and welcome to my portfolio!</p>
+    <p>I'm Mingke Cai, a passionate data enthusiast excited to share my journey with you. This repository showcases a collection of projects that demonstrate my skills in various aspects of data science, including:</p>
     <ul>
       <li>Data preprocessing</li>
       <li>Data analysis</li>
@@ -13,12 +12,11 @@
       <li>Statistical analysis</li>
     </ul>
     <blockquote>
-      <p>Most of my projects are implemented using Python in Jupyter Notebooks. 
-        I frequently utilize popular data science libraries such as Pandas, NumPy, Seaborn, and Matplotlib to derive insights and create compelling visualizations.</p>
+      <p>Most of my projects are implemented using Python in Jupyter Notebooks. I frequently utilize popular data science libraries such as Pandas, NumPy, Seaborn, and Matplotlib to derive insights and create compelling visualizations.</p>
     </blockquote>
   </div>
-  <div style="flex: 0 0 200px; margin-left: 20px;">
-    <img src="https://github.com/MingkeCai/Mingke_Cai_Portfolio/blob/main/avatar_1%20(1).png" width="200" alt="Mingke Cai">
+  <div style="flex: 0 0 200px;">
+    <img src="https://github.com/MingkeCai/Mingke_Cai_Portfolio/blob/main/avatar_1%20(1).png" width="200" alt="Mingke Cai" style="float: right;">
   </div>
 </div>
 
