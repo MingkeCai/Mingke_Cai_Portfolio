@@ -3,7 +3,8 @@
   <div style="flex: 1;">
     <h2>Introduction</h2>
     <p><strong>Hello and welcome to my portfolio!</strong></p>
-    <p>I'm Mingke Cai, a passionate data enthusiast excited to share my journey with you. This repository showcases a collection of projects that demonstrate my skills in various aspects of data science, including:</p>
+    <p>I'm Mingke Cai, a passionate data enthusiast excited to share my journey with you. 
+      This repository showcases a collection of projects that demonstrate my skills in various aspects of data science, including:</p>
     <ul>
       <li>Data preprocessing</li>
       <li>Data analysis</li>
@@ -12,7 +13,8 @@
       <li>Statistical analysis</li>
     </ul>
     <blockquote>
-      <p>Most of my projects are implemented using Python in Jupyter Notebooks. I frequently utilize popular data science libraries such as Pandas, NumPy, Seaborn, and Matplotlib to derive insights and create compelling visualizations.</p>
+      <p>Most of my projects are implemented using Python in Jupyter Notebooks. 
+        I frequently utilize popular data science libraries such as Pandas, NumPy, Seaborn, and Matplotlib to derive insights and create compelling visualizations.</p>
     </blockquote>
   </div>
   <div style="flex: 0 0 200px; margin-left: 20px;">
