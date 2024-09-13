@@ -1,4 +1,5 @@
 # Mingke Cai's Portfolio
+![Mingke Cai](https://github.com/MingkeCai/Mingke_Cai_Portfolio/blob/main/avatar_1%20(1).png)
 ## Introduction
 Hello and welcome to my portfolio!
 
