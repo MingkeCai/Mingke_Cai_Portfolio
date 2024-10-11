@@ -37,15 +37,15 @@ Below you'll find brief summaries of each project in this portfolio. For more de
 >and labor market insights.
 
 ### 4. Data-Driven Diabetes Care: Analyzing Social Determinants in Ontario's Public Health Units
->In this data-driven healthcare analytics project, I investigated the impact of social determinants on diabetes-related hospitalizations across Ontario's Public Health Units. Utilizing
->Python for data analysis and visualization, I conducted a comprehensive study of how factors such as residential instability, material deprivation, dependency, and ethnic concentration
->correlate with diabetes self-management outcomes. The project involved merging and analyzing datasets from Public Health Ontario, performing exploratory data analysis, and applying
->hierarchical multiple regression techniques.
+>In this data-driven healthcare analytics project, I investigated the impact of social determinants on diabetes-related hospitalizations across Ontario's Public Health Units. Using Jupyter
+>Notebook and Python libraries including pandas, numpy, matplotlib, seaborn, and statsmodels, I conducted a comprehensive study of how factors such as residential instability, material
+>deprivation, dependency, and ethnic concentration correlate with diabetes self-management outcomes. The project involved merging and analyzing datasets from Public Health Ontario,
+>performing exploratory data analysis, and applying advanced statistical techniques.
 >
->Key findings revealed that social determinants collectively explained 44.9% of the variance in hospitalization rates, with material deprivation and ethnic concentration emerging as the
->most significant predictors. Interestingly, areas of high ethnic concentration showed lower hospitalization rates, suggesting potential protective community factors. Based on these
->insights, I developed evidence-based recommendations for policymakers, including the implementation of a comprehensive provincial diabetes framework, expansion of access to personalized
->treatments, and targeted interventions for high-risk communities. This project showcases my ability to derive actionable insights from complex healthcare data, potentially informing
->decisions that could improve diabetes outcomes and reduce health disparities in Ontario.
+>The core of this study was a hierarchical multiple regression analysis, sequentially adding ON-Marg factors to a base model that initially only considered the year. This approach revealed
+>that social determinants collectively explained 44.9% of the variance in hospitalization rates, with material deprivation and ethnic concentration as the most significant predictors.
+>Notably, areas of high ethnic concentration showed lower hospitalization rates, suggesting potential protective community factors. Based on these insights, I developed evidence-based
+>policy recommendations to improve diabetes outcomes and reduce health disparities in Ontario. This project demonstrates my ability to apply advanced statistical methods to complex
+>healthcare data, deriving actionable insights that can inform critical policy decisions.
 
 ## Thank you for visiting my portfolio. I hope you find my projects interesting and informative!
