@@ -41,6 +41,7 @@ Below you'll find brief summaries of each project in this portfolio. For more de
 >Python for data analysis and visualization, I conducted a comprehensive study of how factors such as residential instability, material deprivation, dependency, and ethnic concentration
 >correlate with diabetes self-management outcomes. The project involved merging and analyzing datasets from Public Health Ontario, performing exploratory data analysis, and applying
 >hierarchical multiple regression techniques.
+
 >Key findings revealed that social determinants collectively explained 44.9% of the variance in hospitalization rates, with material deprivation and ethnic concentration emerging as the
 >most significant predictors. Interestingly, areas of high ethnic concentration showed lower hospitalization rates, suggesting potential protective community factors. Based on these
 >insights, I developed evidence-based recommendations for policymakers, including the implementation of a comprehensive provincial diabetes framework, expansion of access to personalized
