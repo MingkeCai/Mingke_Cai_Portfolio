@@ -1,0 +1,523 @@
+-- Big Order Alert (Table)
+SELECT 
+    A.order_id,
+    A.sku,
+    A.qty,
+    A.amount,
+    L.ship_city,
+    L.ship_state
+FROM "AmazonSales" A
+JOIN "Location" L ON A.location_id = L.location_id
+WHERE A.amount > 2000
+ORDER BY A.amount DESC;
+
+-- Total Revenue (Number card)
+SELECT
+  SUM("public"."AmazonSales"."amount") AS "sum"
+FROM
+  "public"."AmazonSales"
+WHERE
+  ("public"."AmazonSales"."status" = "Shipped - Delivered to Buyer" )
+ AND ("public"."AmazonSales"."date" >= timestamp '2021-06-29 00:00:00.000' )
+ AND ("public"."AmazonSales"."date" < timestamp '2022-06-30 00:00:00.000' );
+
+-- Total Orders (Number)
+WITH order_status AS (
+	SELECT 
+		COUNT(*) as total_orders,
+		SUM(CASE WHEN status = "Shipped - Delivered to Buyer" THEN 1 ELSE 0 END) as successful_orders
+    FROM 
+        "AmazonSales")
+)
+SELECT 
+    successful_orders
+FROM 
+order_stats;
+
+-- Top 5 City (Bar)
+SELECT 
+    l.ship_city,
+    SUM(a.qty) as count
+FROM 
+    "AmazonSales" a
+JOIN 
+   "Location" l ON a.location_id = l.location_id
+WHERE 
+    a.status = 'Shipped - Delivered to Buyer'
+GROUP BY 
+    l.ship_city
+ORDER BY 
+    count DESC
+LIMIT 5;
+
+-- Most Popular Product (Bar)
+SELECT 
+    pc.category,
+    SUM(a.qty) as count
+FROM 
+    "AmazonSales" a
+JOIN 
+    "ProductDetails" pd ON a.sku = pd.sku
+JOIN 
+    "ProductCategories" pc ON pd.category_id = pc.category_id
+WHERE 
+    a.status = 'Shipped - Delivered to Buyer'
+GROUP BY 
+    pc.category
+ORDER BY 
+    count DESC
+LIMIT 5;
+
+-- Inventory Priority Alert (Table)
+WITH StockLevels AS (
+    SELECT 
+        pd.sku,
+        pd.category_id,
+        pc.category,
+        s.stock,
+        COALESCE(AVG(ams.monthly_sales), 0) as avg_monthly_sales
+    FROM "ProductDetails" pd
+    JOIN "ProductCategories" pc ON pd.category_id = pc.category_id
+    LEFT JOIN "Stock" s ON pd.sku = s.sku
+    LEFT JOIN (
+        SELECT 
+            sku,
+            DATE_TRUNC('month', date) as sale_month,
+            SUM(qty) as monthly_sales
+        FROM "AmazonSales"
+        WHERE status NOT IN ('Cancelled')
+        GROUP BY sku, DATE_TRUNC('month', date)
+    ) ams ON pd.sku = ams.sku
+    GROUP BY pd.sku, pd.category_id, pc.category, s.stock
+),
+CategoryPriority AS (
+    SELECT 
+        category,
+        COUNT(CASE WHEN stock = 0 THEN 1 END) as out_of_stock_count,
+        COUNT(CASE WHEN stock < 10 AND stock > 0 THEN 1 END) as critical_low_stock,
+        COUNT(CASE WHEN stock = 0 THEN 1 END) * 3 + 
+        COUNT(CASE WHEN stock < 10 AND stock > 0 THEN 1 END) as priority_score
+    FROM StockLevels
+    GROUP BY category
+)
+SELECT 
+    category,
+    out_of_stock_count,
+    critical_low_stock,
+    priority_score
+FROM CategoryPriority
+WHERE out_of_stock_count > 0 OR critical_low_stock > 0
+ORDER BY priority_score DESC
+LIMIT 5;
+
+-- MoM Revenue(Number card)
+SELECT
+  DATE_TRUNC('month', "public"."AmazonSales"."date") AS "date",
+  SUM("public"."AmazonSales"."amount") AS "sum"
+FROM
+  "public"."AmazonSales"
+WHERE
+  "public"."AmazonSales"."status" = "Shipped - Delivered to Buyer"
+GROUP BY
+  DATE_TRUNC('month', "public"."AmazonSales"."date")
+ORDER BY
+  DATE_TRUNC('month', "public"."AmazonSales"."date") ASC;
+  
+-- Average Monthly Revenue (Number Card)
+SELECT
+  AVG("source"."sum") AS "avg"
+FROM
+  (
+    SELECT
+      DATE_TRUNC('month', "public"."AmazonSales"."date") AS "date",
+      SUM("public"."AmazonSales"."amount") AS "sum"
+    FROM
+      "public"."AmazonSales"
+   
+WHERE
+      "public"."AmazonSales"."status" = 'Shipped - Delivered to Buyer'
+   
+GROUP BY
+      DATE_TRUNC('month', "public"."AmazonSales"."date")
+   
+ORDER BY
+      DATE_TRUNC('month', "public"."AmazonSales"."date") ASC
+  ) AS "source";
+  
+-- Monthly Revenue Trend (Line)
+SELECT
+  DATE_TRUNC('month', "public"."AmazonSales"."date") AS "date",
+  SUM("public"."AmazonSales"."amount") AS "sum"
+FROM
+  "public"."AmazonSales"
+WHERE
+  "public"."AmazonSales"."status" = 'Shipped - Delivered to Buyer'
+GROUP BY
+  DATE_TRUNC('month', "public"."AmazonSales"."date")
+ORDER BY
+  DATE_TRUNC('month', "public"."AmazonSales"."date") ASC;
+  
+-- Category Performance(Pie)
+SELECT 
+    pc.category,
+    SUM(a.amount) as total_revenue
+FROM 
+    "AmazonSales" a
+JOIN 
+    "ProductDetails" pd ON a.sku = pd.sku
+JOIN 
+    "ProductCategories" pc ON pd.category_id = pc.category_id
+WHERE 
+    a.status = 'Shipped - Delivered to Buyer'
+GROUP BY 
+    pc.category
+ORDER BY 
+    total_revenue DESC;
+   
+-- City Performance (Bar)
+SELECT 
+    pc.category,
+    SUM(a.amount) as total_revenue
+FROM 
+    "AmazonSales" a
+JOIN 
+    "ProductDetails" pd ON a.sku = pd.sku
+JOIN 
+    "ProductCategories" pc ON pd.category_id = pc.category_id
+WHERE 
+    a.status = 'Shipped - Delivered to Buyer'
+GROUP BY 
+    pc.category
+ORDER BY 
+total_revenue DESC;
+
+-- Revenue Lost Due to Cancelation(Row)
+SELECT 
+    'Lost Revenue' as category,
+    SUM(CASE 
+        WHEN status IN (
+            'Cancelled',
+            'Shipped - Lost in Transit',
+            'Shipped - Returning to Seller',
+            'Shipped - Rejected by Buyer',
+            'Shipped - Returned to Seller',
+            'Shipped - Damaged'
+        ) THEN qty * amount 
+        ELSE 0 
+    END) AS value
+FROM "AmazonSales"
+WHERE status NOT IN ('Shipping', 'Pending', 'Pending - Waiting for Pick', 'Shipped - Out for Delivery', 'Shipped - Picked Up', 'Shipped')
+
+UNION ALL
+
+SELECT 
+    'Shipped Revenue' as category,
+    SUM(CASE 
+        WHEN status IN (
+            'Shipped - Delivered to Buyer'
+        ) THEN qty * amount 
+        ELSE 0 
+    END) AS value
+FROM "AmazonSales"
+WHERE status NOT IN ('Shipping', 'Pending', 'Pending - Waiting for Pick', 'Shipped - Out for Delivery', 'Shipped - Picked Up', 'Shipped');
+
+-- Successful Order (Number)
+WITH order_stats AS (
+    SELECT 
+        COUNT(*) as total_orders,
+        SUM(CASE WHEN status = 'Shipped - Delivered to Buyer' THEN 1 ELSE 0 END) as successful_orders
+    FROM 
+        "AmazonSales"
+)
+SELECT 
+    successful_orders
+FROM 
+order_stats;
+
+-- MoM Successful Order (Trend)
+SELECT
+  DATE_TRUNC('month', "public"."AmazonSales"."date") AS "date",
+  COUNT(*) AS "count"
+FROM
+  "public"."AmazonSales"
+WHERE
+  "public"."AmazonSales"."status" = 'Shipped - Delivered to Buyer'
+GROUP BY
+  DATE_TRUNC('month', "public"."AmazonSales"."date")
+ORDER BY
+  DATE_TRUNC('month', "public"."AmazonSales"."date") ASC;
+  
+-- Return Rate (Number)
+WITH order_stats AS (
+    SELECT 
+        COUNT(*) as total_orders,
+        SUM(CASE WHEN status != 'Shipped - Delivered to Buyer' THEN 1 ELSE 0 END) as not_successful_orders
+    FROM 
+        "AmazonSales"
+)
+SELECT 
+    CAST((not_successful_orders * 1.0 / total_orders) AS DECIMAL(10,2)) as success_rate
+FROM 
+order_stats;
+
+-- Average Order Value (Number)
+SELECT 
+    ROUND(AVG(amount)::numeric, 2) as average_order_value
+FROM "AmazonSales"
+WHERE status LIKE 'Shipped - Delivered to Buyer';
+
+-- Monthly Order Tracker (Line)
+WITH monthly_orders AS (
+    SELECT 
+        DATE_TRUNC('month', date) as month,
+        COUNT(*) as total_orders,
+        SUM(CASE WHEN status = 'Shipped - Delivered to Buyer' THEN 1 ELSE 0 END) as successful_orders
+    FROM 
+        "AmazonSales"
+    GROUP BY 
+        DATE_TRUNC('month', date)
+)
+SELECT 
+    month,
+    total_orders,
+    successful_orders
+FROM 
+    monthly_orders
+ORDER BY month;
+
+-- Shipped vs. Cancelled Orders by Region (Bar)
+SELECT 
+    L.ship_state AS region,
+    A.status AS order_status,
+    COUNT(A.order_id) AS total_orders
+FROM "AmazonSales" A
+JOIN "Location" L ON A.location_id = L.location_id
+WHERE A.status IN ('Shipped', 'Cancelled')
+GROUP BY L.ship_state, A.status
+ORDER BY L.ship_state, A.status;
+
+-- SKU-Level Shipment and Cancellation (bar)
+SELECT 
+    A.sku AS product_sku,
+    SUM(CASE WHEN A.status = 'Shipped' THEN 1 ELSE 0 END) AS total_shipped,
+    SUM(CASE WHEN A.status = 'Cancelled' THEN 1 ELSE 0 END) AS total_cancelled
+FROM "AmazonSales" A
+WHERE A.status IN ('Shipped', 'Cancelled')
+GROUP BY A.sku
+ORDER BY total_cancelled DESC, total_shipped DESC
+LIMIT 10;
+
+-- Service Level Performance Comparison(Bar)
+SELECT 
+    D.ship_service_level,
+    COUNT(DISTINCT A.order_id) as total_orders,
+    CAST(AVG(A.amount) AS DECIMAL(10,2)) as avg_order_value,
+    COUNT(DISTINCT L.ship_city) as cities_served
+FROM 
+    "Deliveries" D
+JOIN 
+    "AmazonSales" A ON D.order_id = A.order_id
+JOIN 
+    "Location" L ON A.location_id = L.location_id
+GROUP BY 
+    D.ship_service_level;
+    
+-- Expedited Avg. Order Value (Number)
+SELECT 
+    CAST(AVG(A.amount) AS DECIMAL(10,2)) as avg_order_value
+FROM 
+    "Deliveries" D
+JOIN 
+    "AmazonSales" A ON D.order_id = A.order_id
+WHERE 
+    D.ship_service_level = 'Expedited';
+    
+-- Standard Avg. Order Value (Number)
+SELECT 
+    CAST(AVG(A.amount) AS DECIMAL(10,2)) as avg_order_value
+FROM 
+    "Deliveries" D
+JOIN 
+    "AmazonSales" A ON D.order_id = A.order_id
+WHERE 
+    D.ship_service_level = 'Standard';
+
+-- Expedited Orders % (Number)
+SELECT 
+    CAST(COUNT(CASE WHEN D.ship_service_level = 'Expedited' THEN 1 END) * 1.0 / 
+        COUNT(*) AS DECIMAL(10,3)) as expedited_percentage
+FROM 
+    "Deliveries" D
+JOIN 
+"AmazonSales" A ON D.order_id = A.order_id;
+
+-- Standard Orders % (Number)
+SELECT 
+    CAST(COUNT(CASE WHEN D.ship_service_level = 'Standard' THEN 1 END) * 1.0 / 
+        COUNT(*) AS DECIMAL(10,3)) as standard_percentage
+FROM 
+    "Deliveries" D
+JOIN 
+"AmazonSales" A ON D.order_id = A.order_id;
+
+-- Expedited Cancelation Rate (Number)
+SELECT 
+    D.ship_service_level,
+    COUNT(CASE WHEN A.status = 'Cancelled' THEN 1 END) as cancelled_orders,
+    COUNT(*) as total_orders,
+    ROUND(COUNT(CASE WHEN A.status = 'Cancelled' THEN 1 END) * 1.0 / COUNT(*), 3) as cancellation_rate
+FROM 
+    "AmazonSales" A
+JOIN 
+    "Deliveries" D ON A.order_id = D.order_id
+GROUP BY 
+    D.ship_service_level;
+    
+-- Standard Cancelation Rate (Number)
+SELECT 
+    COUNT(CASE WHEN A.status = 'Cancelled' THEN 1 END) as cancelled_orders,
+    COUNT(*) as total_orders,
+    ROUND(COUNT(CASE WHEN A.status = 'Cancelled' THEN 1 END) * 1.0 / NULLIF(COUNT(*), 0), 3) as cancellation_rate
+FROM 
+    "AmazonSales" A
+JOIN 
+    "Deliveries" D ON A.order_id = D.order_id
+WHERE
+TRIM(UPPER(D.ship_service_level)) = 'STANDARD';
+
+-- Delivery Status Distribution (Pie)
+SELECT 
+    status,
+    COUNT(*) as count,
+    COUNT(*) * 1.0 / SUM(COUNT(*)) OVER () as percentage
+FROM 
+    "AmazonSales"
+GROUP BY 
+    status
+ORDER BY 
+count DESC;
+
+-- Delivery Status Patterns by Order Value (Bar)
+SELECT 
+    CASE 
+        WHEN amount < 500 THEN 'Low (<500)'
+        ELSE 'High (>500)'
+    END as order_value_range,
+    status,
+    COUNT(*) as order_count
+FROM 
+    "AmazonSales"
+WHERE 
+    status IN (
+        SELECT status
+        FROM "AmazonSales"
+        GROUP BY status
+        ORDER BY COUNT(*) DESC
+        LIMIT 3
+    )
+GROUP BY 
+    CASE 
+        WHEN amount < 500 THEN 'Low (<500)'
+        ELSE 'High (>500)'
+    END,
+    status
+ORDER BY 
+order_count DESC;
+
+-- Inventory Priority Alert (Table)
+WITH StockLevels AS (
+    SELECT 
+        pd.sku,
+        pd.category_id,
+        pc.category,
+        s.stock,
+        COALESCE(AVG(ams.monthly_sales), 0) as avg_monthly_sales
+    FROM "ProductDetails" pd
+    JOIN "ProductCategories" pc ON pd.category_id = pc.category_id
+    LEFT JOIN "Stock" s ON pd.sku = s.sku
+    LEFT JOIN (
+        SELECT 
+            sku,
+            DATE_TRUNC('month', date) as sale_month,
+            SUM(qty) as monthly_sales
+        FROM "AmazonSales"
+        WHERE status NOT IN ('Cancelled')
+        GROUP BY sku, DATE_TRUNC('month', date)
+    ) ams ON pd.sku = ams.sku
+    GROUP BY pd.sku, pd.category_id, pc.category, s.stock
+),
+CategoryPriority AS (
+    SELECT 
+        category,
+        COUNT(CASE WHEN stock = 0 THEN 1 END) as out_of_stock_count,
+        COUNT(CASE WHEN stock < 10 AND stock > 0 THEN 1 END) as critical_low_stock,
+        COUNT(CASE WHEN stock = 0 THEN 1 END) * 3 + 
+        COUNT(CASE WHEN stock < 10 AND stock > 0 THEN 1 END) as priority_score
+    FROM StockLevels
+    GROUP BY category
+)
+SELECT 
+    category,
+    out_of_stock_count,
+    critical_low_stock,
+    priority_score
+FROM CategoryPriority
+WHERE out_of_stock_count > 0 OR critical_low_stock > 0
+ORDER BY priority_score DESC
+LIMIT 5;
+
+-- Inventory health (Bar)
+SELECT 
+    CASE 
+        WHEN stock < 10 THEN 'Low'
+        WHEN stock BETWEEN 10 AND 50 THEN 'Sufficient'
+        ELSE 'Excess'
+    END AS inventory_status,
+    COUNT(*) AS item_count
+FROM "Stock"
+GROUP BY inventory_status;
+
+-- Out of Stock and Low Stock Alerts (Bar)
+WITH StockLevels AS (
+    SELECT 
+        pd.sku,
+        pd.category_id,
+        pc.category,
+        s.stock,
+        -- Calculate average monthly sales
+        COALESCE(AVG(ams.monthly_sales), 0) as avg_monthly_sales
+    FROM "ProductDetails" pd
+    JOIN "ProductCategories" pc ON pd.category_id = pc.category_id
+    LEFT JOIN "Stock" s ON pd.sku = s.sku
+    LEFT JOIN (
+        -- Calculate monthly sales per SKU
+        SELECT 
+            sku,
+            DATE_TRUNC('month', date) as sale_month,
+            SUM(qty) as monthly_sales   
+	      FROM "AmazonSales"
+	      WHERE status NOT IN ('Cancelled')
+        GROUP BY sku, DATE_TRUNC('month', date)
+    ) ams ON pd.sku = ams.sku
+    GROUP BY pd.sku, pd.category_id, pc.category, s.stock
+)
+SELECT 
+    category,
+    COUNT(CASE WHEN stock = 0 THEN 1 END) as out_of_stock_count,
+    COUNT(CASE WHEN stock < 10 THEN 1 END) as low_stock_count,
+    COUNT(CASE WHEN stock > avg_monthly_sales * 3 THEN 1 END) as excess_stock_count
+FROM StockLevels  -- Removed the quotes here
+GROUP BY category
+ORDER BY low_stock_count DESC
+LIMIT 10;
+
+-- Inventory Shortages (Table)
+SELECT 
+    S.sku,
+    PD.style_id,
+    PD.color,
+    S.stock AS current_stock
+FROM "Stock" S
+JOIN "ProductDetails" PD ON S.sku = PD.sku
+WHERE S.stock < 10
+ORDER BY S.stock DESC;
