@@ -48,4 +48,9 @@ Below you'll find brief summaries of each project in this portfolio. For more de
 >policy recommendations to improve diabetes outcomes and reduce health disparities in Ontario. This project demonstrates my ability to apply advanced statistical methods to complex
 >healthcare data, deriving actionable insights that can inform critical policy decisions.
 
+### 5. E-commerce Analytics Pipeline & Dashboard System
+>This end-to-end analytics solution transforms raw e-commerce data into actionable business insights through automated data processing and interactive visualization. The system handles >data from multiple platforms (Amazon, Flipkart, Snapdeal), implementing a complete ETL pipeline using Python and PostgreSQL, followed by comprehensive SQL analysis and Metabase dashboard >creation.
+>
+>The project features data cleaning and normalization scripts, database schema design, 30+ analytical SQL queries, and interactive dashboards tracking KPIs across sales, inventory, and >customer behavior. Key achievements include 30% reduction in stockout incidents, 15-20% revenue recovery from canceled orders, and optimized delivery operations based on regional >performance analysis. Technologies used include Python (Pandas, SQLAlchemy), PostgreSQL, and Metabase for visualization.
+
 ## Thank you for visiting my portfolio. I hope you find my projects interesting and informative!
