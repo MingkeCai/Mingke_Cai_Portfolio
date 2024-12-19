@@ -53,4 +53,9 @@ Below you'll find brief summaries of each project in this portfolio. For more de
 >
 >The project features data cleaning and normalization scripts, database schema design, 30+ analytical SQL queries, and interactive dashboards tracking KPIs across sales, inventory, and >customer behavior. Key achievements include 30% reduction in stockout incidents, 15-20% revenue recovery from canceled orders, and optimized delivery operations based on regional >performance analysis. Technologies used include Python (Pandas, SQLAlchemy), PostgreSQL, and Metabase for visualization.
 
+### 6. Paper Quality Prediction Using Machine Learning and Sensor Data
+>Developed and implemented an advanced machine learning solution for a paper manufacturing company to predict and prevent paper quality issues using real-time sensor data. The project >analyzed over 500 sensor readings across various parameters (temperature, pressure, flow, speed, tank levels) to identify key correlations with paper quality. Using an ensemble approach >combining XGBoost, LightGBM, and Random Forest models, achieved 87% accuracy in predicting paper quality issues, enabling proactive quality control and reducing waste.
+>
+>Enhanced the solution with a Deep Deterministic Policy Gradient (DDPG) reinforcement learning model for automated control, maintaining stable quality measures above rejection thresholds. >The project successfully identified the top 20 most influential sensors and provided actionable insights for process optimization, leading to potential reduction in rejection rates and >improved production efficiency. Built comprehensive data preprocessing pipelines, feature engineering techniques, and correlation analyses to handle complex industrial sensor data and >deliver robust predictions.
+
 ## Thank you for visiting my portfolio. I hope you find my projects interesting and informative!
